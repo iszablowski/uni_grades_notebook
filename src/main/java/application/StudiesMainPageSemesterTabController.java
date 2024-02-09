@@ -126,6 +126,7 @@ public class StudiesMainPageSemesterTabController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Platform.runLater(() -> {
+            this.initClassTable();
             semesterTab.setText(semester.getSemesterCode());
             newClassGradeCombobox.getItems().add(null);
             newClassGradeCombobox.getItems().addAll(Grades.getGrades());
