@@ -4,9 +4,9 @@ public class Class {
     private String className;
     private String classCode;
     private int classEcts;
-    private double classGrade;
+    private Double classGrade;
 
-    public Class(String name, String code, int ects, double grade) {
+    public Class(String name, String code, int ects, Double grade) {
         this.setClassName(name);
         this.setClassCode(code);
         this.setClassEcts(ects);
@@ -17,6 +17,10 @@ public class Class {
         this.setClassName(name);
         this.setClassCode(code);
         this.setClassEcts(ects);
+    }
+
+    public boolean isGraded() {
+        return (this.classGrade != 0);
     }
 
     public String getClassName() {
@@ -43,7 +47,7 @@ public class Class {
         this.classEcts = newClassEcts;
     }
 
-    public double getClassGrade() {
+    public Double getClassGrade() {
         return classGrade;
     }
 
@@ -51,7 +55,7 @@ public class Class {
         this.classGrade = newClassGrade;
     }
 
-    public double getWeightedGrade() {
+    public Double getWeightedGrade() {
         return (this.classGrade * this.classEcts);
     }
 }
