@@ -49,6 +49,7 @@ public class Studies {
     }
 
     public double getStudiesCumulativeAverage() {
+//        Change this function, so it will return cumulative average for number of semesters; for first, for first and second, for first, second and third;
         double studiesWeightedGradesSum = 0;
         for (Semester semester: semesters) {
             studiesWeightedGradesSum += semester.getSemesterWeightedGradesSum();

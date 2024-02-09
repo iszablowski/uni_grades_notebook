@@ -13,6 +13,12 @@ public class Class {
         this.setClassGrade(grade);
     }
 
+    public Class(String name, String code, int ects) {
+        this.setClassName(name);
+        this.setClassCode(code);
+        this.setClassEcts(ects);
+    }
+
     public String getClassName() {
         return className;
     }

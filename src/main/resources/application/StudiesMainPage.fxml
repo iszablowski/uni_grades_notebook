@@ -1,11 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
 
-
-<AnchorPane prefHeight="471.0" prefWidth="726.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.StudiesMainPageController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="548.0" prefWidth="840.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.StudiesMainPageController">
    <children>
-      <Label fx:id="studiesName" layoutX="345.0" layoutY="236.0" text="Label" />
+      <AnchorPane prefHeight="490.0" prefWidth="760.0">
+         <children>
+            <TabPane fx:id="semestersTabPane" layoutY="27.0" prefHeight="521.0" prefWidth="840.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
+               <effect>
+                  <Blend />
+               </effect>
+            </TabPane>
+            <MenuBar layoutY="1.0" prefHeight="27.0" prefWidth="840.0">
+              <menus>
+                <Menu mnemonicParsing="false" text="Semesters">
+                     <items>
+                        <MenuItem fx:id="addSemesterMenuItem" onAction="#addSemesterMenuItemClick" mnemonicParsing="false" text="Add" />
+                        <MenuItem fx:id="removeSemesterMenuItem" mnemonicParsing="false" text="Remove" />
+                     </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                     <items>
+                        <CheckMenuItem fx:id="editableCheckMenuItem" mnemonicParsing="false" text="Editable" />
+                     </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+         </children>
+      </AnchorPane>
    </children>
-</AnchorPane>
+</StackPane>

@@ -13,6 +13,7 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
         Scene studiesChooseScene = new Scene(new FXMLLoader(getClass().getResource("StudiesChoose.fxml")).load());
         stage.setTitle("University notebook");
+        stage.setResizable(false);
         stage.setScene(studiesChooseScene);
         stage.show();
     }
