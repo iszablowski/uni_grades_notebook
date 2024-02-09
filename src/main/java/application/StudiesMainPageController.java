@@ -51,7 +51,7 @@ public class StudiesMainPageController implements Initializable {
 
         final String semesterCode = PopUpWindow.getSemesterName(this.semestersTabPane.getScene().getWindow(), "Enter semester name");
 
-        if (semesterCode == null || semesterCode.trim().isEmpty()) {
+        if (!InputValidation.isValidString(semesterCode)) {
             return;
         }
         this.addSemesterTab(semesterCode);

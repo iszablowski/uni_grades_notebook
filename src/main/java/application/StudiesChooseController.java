@@ -7,7 +7,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -20,23 +19,28 @@ public class StudiesChooseController implements Initializable {
 
     private HashMap<String, Studies> nameToStudies = new HashMap<String, Studies>();
 
+    @FXML
+    private AnchorPane studiesMainPagePane;
+    @FXML
+    private Button addStudiesBtn;
+
+    @FXML
+    private ListView<String> studiesList = new ListView<String>();
+
     private void addStudies(String newStudiesName) {
         Studies newStudies = new Studies(newStudiesName);
         nameToStudies.put(newStudiesName, newStudies);
         studiesList.getItems().add(newStudiesName);
     }
+    @FXML
+    protected void addStudiesBtnClick() throws IOException {
+        final String studiesName = PopUpWindow.getSemesterName(this.studiesMainPagePane.getScene().getWindow(), "Enter studies name");
 
-    @FXML
-    private AnchorPane studiesMainPagePane;
-    @FXML
-    private Button addStudiesBtn;
-    @FXML
-    private TextField studiesName;
-    @FXML
-    private ListView<String> studiesList = new ListView<String>();
-    @FXML
-    protected void addStudiesBtnClick() {
-        this.addStudies(studiesName.getText());
+        if (!InputValidation.isValidString(studiesName)) {
+            return;
+        }
+
+        this.addStudies(studiesName);
     }
 
     @FXML
