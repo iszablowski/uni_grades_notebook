@@ -5,23 +5,23 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 
-public class SemesterNamePopUpWindowController {
+public class NewNamePopUpWindowController {
 
     @FXML
-    private StackPane newSemesterCodePopUpPane;
+    private StackPane newNamePopUpPane;
 
     @FXML
-    private TextField newSemesterCode;
+    private TextField newNameTextField;
 
     @FXML
     private Button submitButton;
 
-    public TextField getNewSemesterCode() {
-        return newSemesterCode;
+    public TextField getNewNameTextField() {
+        return newNameTextField;
     }
 
     @FXML
     private void submitButtonAction() {
-        this.newSemesterCodePopUpPane.getScene().getWindow().hide();
+        this.newNamePopUpPane.getScene().getWindow().hide();
     }
 }
