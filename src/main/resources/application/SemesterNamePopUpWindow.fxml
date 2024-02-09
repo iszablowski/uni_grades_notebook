@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+
+
+<StackPane fx:id="newSemesterCodePopUpPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="162.0" prefWidth="303.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.SemesterNamePopUpWindowController">
+   <children>
+      <AnchorPane prefHeight="198.0" prefWidth="356.0">
+         <children>
+            <TextField fx:id="newSemesterCode" layoutX="86.0" layoutY="57.0" prefHeight="24.0" prefWidth="131.0" promptText="Enter code" />
+            <Button fx:id="submitButton" layoutX="119.0" onAction="#submitButtonAction" layoutY="109.0" mnemonicParsing="false" text="Submit" />
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>

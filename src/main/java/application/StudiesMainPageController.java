@@ -3,10 +3,15 @@ package application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.io.IOException;
 import java.net.URL;
@@ -40,6 +45,7 @@ public class StudiesMainPageController implements Initializable {
         FXMLLoader loader = new FXMLLoader(this.getClass().getResource("StudiesMainPageSemesterTab.fxml"));
         Tab newTab = loader.load();
         this.semestersTabPane.getTabs().add(newTab);
+        this.semestersTabPane.getSelectionModel().select(newTab);
 
         StudiesMainPageSemesterTabController controller = loader.getController();
         controller.setSemester(newSemester);
@@ -47,18 +53,33 @@ public class StudiesMainPageController implements Initializable {
 
     @FXML
     private void addSemesterMenuItemClick() throws IOException {
-//        Add source of getting semester name from user, probably need to expand the area
-        this.addSemesterTab("24Z");
+
+        final String semesterCode = this.getSemesterName(this.semestersTabPane.getScene().getWindow());
+
+        if (semesterCode == null || semesterCode.trim().isEmpty()) {
+            return;
+        }
+        this.addSemesterTab(semesterCode);
+    }
+
+    private String getSemesterName(Window owner) throws IOException {
+        FXMLLoader loader = new FXMLLoader(this.getClass().getResource("SemesterNamePopUpWindow.fxml"));
+        Parent root = loader.load();
+        Stage stage = new Stage();
+        stage.initOwner(owner);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setTitle("Enter semester name");
+        stage.setScene(new Scene(root));
+        stage.setResizable(false);
+        stage.showAndWait();
+        SemesterNamePopUpWindowController controller = loader.getController();
+        return controller.getNewSemesterCode().getText();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-//        This initialize is just for test
-        try {
-            this.addSemesterTab("22Z");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
     }
+
 }
 

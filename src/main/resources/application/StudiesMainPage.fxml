@@ -22,7 +22,7 @@
               <menus>
                 <Menu mnemonicParsing="false" text="Semesters">
                      <items>
-                        <MenuItem fx:id="addSemesterMenuItem" onAction="#addSemesterMenuItemClick" mnemonicParsing="false" text="Add" />
+                        <MenuItem fx:id="addSemesterMenuItem" mnemonicParsing="false" onAction="#addSemesterMenuItemClick" text="Add" />
                         <MenuItem fx:id="removeSemesterMenuItem" mnemonicParsing="false" text="Remove" />
                      </items>
                 </Menu>
