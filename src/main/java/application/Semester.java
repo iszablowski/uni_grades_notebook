@@ -36,10 +36,20 @@ public class Semester {
         semesterClasses.add(newClass);
     }
 
-    public int getSemesterEcts() {
+    public int getSemesterPlannedEcts() {
         int semesterEcts = 0;
         for (Class uniClass: semesterClasses) {
             semesterEcts += uniClass.getClassEcts();
+        }
+        return semesterEcts;
+    }
+
+    public int getSemesterEcts() {
+        int semesterEcts = 0;
+        for (Class uniClass: semesterClasses) {
+            if (uniClass.isGraded() && uniClass.getClassGrade() != 2) {
+                semesterEcts += uniClass.getClassEcts();
+            }
         }
         return semesterEcts;
     }

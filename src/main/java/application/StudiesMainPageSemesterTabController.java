@@ -11,6 +11,7 @@ import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -44,6 +45,9 @@ public class StudiesMainPageSemesterTabController implements Initializable {
 
     @FXML
     private CheckBox haveGradeCheckbox;
+
+    @FXML
+    private MenuItem renameSemesterMenuItem;
 
     @FXML
     private TextField newClassCodeTextField;
@@ -93,6 +97,18 @@ public class StudiesMainPageSemesterTabController implements Initializable {
         return (grade == null) ? 0 :  grade;
     }
 
+    @FXML
+    private void renameSemesterMenuItemAction() throws IOException {
+        final String newSemesterCode = PopUpWindow.getSemesterName(this.semesterTab.getContent().getScene().getWindow(), "Enter new semester name");
+
+        if (!InputValidation.isValidString(newSemesterCode)) {
+            return;
+        }
+        semester.setSemesterCode(newSemesterCode);
+        semesterTab.setText(newSemesterCode);
+
+    }
+
     private String getNewClassEctsString() {
         return newClassEctsTextField.getText();
     }
@@ -101,6 +117,7 @@ public class StudiesMainPageSemesterTabController implements Initializable {
         Class newClass = new Class(newClassName, newClassCode, newClassEcts, newClassGrade);
         semester.addClass(newClass);
         classesTable.getItems().add(newClass);
+        updateSemesterData();
     }
 
     @FXML
@@ -138,6 +155,7 @@ public class StudiesMainPageSemesterTabController implements Initializable {
                 } else {
                     classesTable.refresh();
                 }
+                updateSemesterData();
             }
         });
 
@@ -153,6 +171,7 @@ public class StudiesMainPageSemesterTabController implements Initializable {
                 } else {
                     classesTable.refresh();
                 }
+                updateSemesterData();
             }
         });
 
@@ -168,6 +187,7 @@ public class StudiesMainPageSemesterTabController implements Initializable {
                 } else {
                     classesTable.refresh();
                 }
+                updateSemesterData();
             }
         });
 
@@ -183,6 +203,7 @@ public class StudiesMainPageSemesterTabController implements Initializable {
                 } else {
                     classDoubleCellEditEvent.getTableView().getItems().get(classDoubleCellEditEvent.getTablePosition().getRow()).setClassGrade(0);
                 }
+                updateSemesterData();
             }
         });
     }
@@ -194,6 +215,11 @@ public class StudiesMainPageSemesterTabController implements Initializable {
         } else {
             classesTable.setEditable(false);
         }
+    }
+
+    private void updateSemesterData()  {
+        ectsLabel.setText(semester.getSemesterEcts() + "/" + String.valueOf(semester.getSemesterPlannedEcts()));
+        semesterAverageLabel.setText(String.valueOf(semester.getSemesterAverage()));
     }
 
     @Override

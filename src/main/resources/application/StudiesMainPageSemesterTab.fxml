@@ -14,6 +14,13 @@
 
 <?import javafx.scene.control.CheckMenuItem?>
 <Tab fx:id="semesterTab" text="Untitled Tab 1" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.StudiesMainPageSemesterTabController">
+   <contextMenu>
+      <ContextMenu>
+         <items>
+            <MenuItem fx:id="renameSemesterMenuItem" onAction="#renameSemesterMenuItemAction" text="Rename" />
+         </items>
+      </ContextMenu>
+   </contextMenu>
    <content>
       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="561.0" prefWidth="708.0">
          <children>
