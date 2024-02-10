@@ -1,4 +1,6 @@
-package application;
+package application.tools;
+
+import application.Grades;
 
 public class InputValidation {
     public static boolean isValidString(String string) {

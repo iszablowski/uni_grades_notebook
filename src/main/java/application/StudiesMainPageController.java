@@ -1,9 +1,9 @@
 package application;
 
+import application.tools.InputValidation;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -19,9 +19,6 @@ public class StudiesMainPageController implements Initializable {
 
     @FXML
     private MenuItem addSemesterMenuItem;
-
-    @FXML
-    private CheckMenuItem editableCheckMenuItem;
 
     @FXML
     private MenuItem removeSemesterMenuItem;
@@ -61,6 +58,5 @@ public class StudiesMainPageController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
     }
-
 }
 

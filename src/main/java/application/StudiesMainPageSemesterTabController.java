@@ -1,10 +1,15 @@
 package application;
 
+import application.tools.CustomIntegerStringConverter;
+import application.tools.InputValidation;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -20,7 +25,7 @@ public class StudiesMainPageSemesterTabController implements Initializable {
     private TableColumn<Class, String> classNameColumn;
 
     @FXML
-    private TableColumn<Class, String> codeColum;
+    private TableColumn<Class, String> codeColumn;
 
     @FXML
     private Label cumulativeAverageLabel;
@@ -42,6 +47,9 @@ public class StudiesMainPageSemesterTabController implements Initializable {
 
     @FXML
     private TextField newClassCodeTextField;
+
+    @FXML
+    private CheckMenuItem isClassesTableEditable;
 
     @FXML
     private TextField newClassEctsTextField;
@@ -117,10 +125,75 @@ public class StudiesMainPageSemesterTabController implements Initializable {
     }
 
     private void initClassTable() {
+        classesTable.setEditable(true);
+        classNameColumn.setEditable(true);
         classNameColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
-        codeColum.setCellValueFactory(new PropertyValueFactory<>("classCode"));
+        classNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        classNameColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Class, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Class, String> classStringCellEditEvent) {
+                String newClassName = classStringCellEditEvent.getNewValue();
+                if (InputValidation.isValidString(newClassName)) {
+                    classStringCellEditEvent.getTableView().getItems().get(classStringCellEditEvent.getTablePosition().getRow()).setClassName(newClassName);
+                } else {
+                    classesTable.refresh();
+                }
+            }
+        });
+
+        codeColumn.setEditable(true);
+        codeColumn.setCellValueFactory(new PropertyValueFactory<>("classCode"));
+        codeColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        codeColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Class, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Class, String> classStringCellEditEvent) {
+                String newClassCode = classStringCellEditEvent.getNewValue();
+                if (InputValidation.isValidString(newClassCode)) {
+                    classStringCellEditEvent.getTableView().getItems().get(classStringCellEditEvent.getTablePosition().getRow()).setClassCode(newClassCode);
+                } else {
+                    classesTable.refresh();
+                }
+            }
+        });
+
+        ectsColumn.setEditable(true);
         ectsColumn.setCellValueFactory(new PropertyValueFactory<>("classEcts"));
+        ectsColumn.setCellFactory(TextFieldTableCell.<Class, Integer>forTableColumn(new CustomIntegerStringConverter()));
+        ectsColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Class, Integer>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Class, Integer> classIntegerCellEditEvent) {
+                Integer newEcts = classIntegerCellEditEvent.getNewValue();
+                if (newEcts != null && newEcts > 0) {
+                    classIntegerCellEditEvent.getTableView().getItems().get(classIntegerCellEditEvent.getTablePosition().getRow()).setClassEcts(newEcts);
+                } else {
+                    classesTable.refresh();
+                }
+            }
+        });
+
+        gradeColumn.setEditable(true);
         gradeColumn.setCellValueFactory(new PropertyValueFactory<>("classGrade"));
+        gradeColumn.setCellFactory(ComboBoxTableCell.<Class, Double>forTableColumn(newClassGradeCombobox.getItems()));
+        gradeColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Class, Double>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Class, Double> classDoubleCellEditEvent) {
+                Double newGrade = classDoubleCellEditEvent.getNewValue();
+                if (newGrade != null) {
+                    classDoubleCellEditEvent.getTableView().getItems().get(classDoubleCellEditEvent.getTablePosition().getRow()).setClassGrade(newGrade);
+                } else {
+                    classDoubleCellEditEvent.getTableView().getItems().get(classDoubleCellEditEvent.getTablePosition().getRow()).setClassGrade(0);
+                }
+            }
+        });
+    }
+
+    @FXML
+    private void isClassesTableEditableChange() {
+        if (isClassesTableEditable.isSelected()) {
+            classesTable.setEditable(true);
+        } else {
+            classesTable.setEditable(false);
+        }
     }
 
     @Override

@@ -5,4 +5,6 @@ module application {
 
     opens application to javafx.fxml;
     exports application;
+    exports application.tools;
+    opens application.tools to javafx.fxml;
 }

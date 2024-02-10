@@ -26,11 +26,6 @@
                         <MenuItem fx:id="removeSemesterMenuItem" mnemonicParsing="false" text="Remove" />
                      </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                     <items>
-                        <CheckMenuItem fx:id="editableCheckMenuItem" mnemonicParsing="false" text="Editable" />
-                     </items>
-                </Menu>
               </menus>
             </MenuBar>
          </children>
