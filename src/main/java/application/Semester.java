@@ -44,6 +44,16 @@ public class Semester {
         return semesterEcts;
     }
 
+    public int getSemesterEctsToAverage() {
+        int semesterEcts = 0;
+        for (Class uniClass: semesterClasses) {
+            if (uniClass.isGraded()) {
+                semesterEcts += uniClass.getClassEcts();
+            }
+        }
+        return semesterEcts;
+    }
+
     public int getSemesterEcts() {
         int semesterEcts = 0;
         for (Class uniClass: semesterClasses) {
@@ -63,6 +73,6 @@ public class Semester {
     }
 
     public double getSemesterAverage() {
-        return Math.round(this.getSemesterWeightedGradesSum()/this.getSemesterEcts() * 100d)/100d;
+        return Math.round(this.getSemesterWeightedGradesSum()/this.getSemesterEctsToAverage() * 100d)/100d;
     }
 }

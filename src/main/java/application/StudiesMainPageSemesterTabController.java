@@ -121,6 +121,15 @@ public class StudiesMainPageSemesterTabController implements Initializable {
     }
 
     @FXML
+    public void semesterTabOpenAction() {
+        Platform.runLater(() -> {
+            if (semesterTab.isSelected()) {
+                updateSemesterCumulativeAverage();
+            }
+        });
+    }
+
+    @FXML
     private void addClassButtonClick() {
         String classEctsString = this.getNewClassEctsString();
         String className = this.getNewClassName();
@@ -220,6 +229,12 @@ public class StudiesMainPageSemesterTabController implements Initializable {
     private void updateSemesterData()  {
         ectsLabel.setText(semester.getSemesterEcts() + "/" + String.valueOf(semester.getSemesterPlannedEcts()));
         semesterAverageLabel.setText(String.valueOf(semester.getSemesterAverage()));
+        this.updateSemesterCumulativeAverage();
+    }
+
+    private void updateSemesterCumulativeAverage() {
+        Studies studies = (Studies) semesterTab.getContent().getScene().getWindow().getUserData();
+        cumulativeAverageLabel.setText(String.valueOf(studies.getStudiesCumulativeAverage(semester)));
     }
 
     @Override

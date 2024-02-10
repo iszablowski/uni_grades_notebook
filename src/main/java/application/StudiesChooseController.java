@@ -59,6 +59,7 @@ public class StudiesChooseController implements Initializable {
         stage.setTitle(choosenStudies.getStudiesName());
         stage.setScene(new Scene(root));
         stage.setResizable(false);
+        stage.setUserData(choosenStudies);
         stage.show();
 
         studiesMainPagePane.getScene().getWindow().hide();

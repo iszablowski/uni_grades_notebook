@@ -48,12 +48,16 @@ public class Studies {
         return studiesEcts;
     }
 
-    public double getStudiesCumulativeAverage() {
-//        Change this function, so it will return cumulative average for number of semesters; for first, for first and second, for first, second and third;
+    public double getStudiesCumulativeAverage(Semester semesterToEndOn) {
         double studiesWeightedGradesSum = 0;
+        int studiesEcts = 0;
         for (Semester semester: semesters) {
+            studiesEcts += semester.getSemesterEctsToAverage();
             studiesWeightedGradesSum += semester.getSemesterWeightedGradesSum();
+            if (semester == semesterToEndOn) {
+                break;
+            }
         }
-        return Math.round(studiesWeightedGradesSum/this.getStudiesEcts() * 100d)/100d;
+        return Math.round(studiesWeightedGradesSum/studiesEcts * 100d)/100d;
     }
 }

@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 <?import javafx.scene.control.CheckMenuItem?>
-<Tab fx:id="semesterTab" text="Untitled Tab 1" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.StudiesMainPageSemesterTabController">
+<Tab fx:id="semesterTab" text="Untitled Tab 1" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.StudiesMainPageSemesterTabController" onSelectionChanged="#semesterTabOpenAction" >
    <contextMenu>
       <ContextMenu>
          <items>
