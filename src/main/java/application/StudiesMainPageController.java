@@ -1,6 +1,8 @@
 package application;
 
+import application.tools.DatabaseManager;
 import application.tools.InputValidation;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -10,12 +12,10 @@ import javafx.scene.control.TabPane;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class StudiesMainPageController implements Initializable {
     private static Studies studies;
-    private ArrayList<StudiesMainPageSemesterTabController> semesterTabs = new ArrayList<>();
 
     @FXML
     private MenuItem addSemesterMenuItem;
@@ -30,10 +30,7 @@ public class StudiesMainPageController implements Initializable {
         studies = newStudies;
     }
 
-    private void addSemesterTab(String semesterName) throws IOException {
-        Semester newSemester = new Semester(semesterName);
-        studies.addSemester(newSemester);
-
+    private void addSemesterTab(Semester newSemester) throws IOException {
         FXMLLoader loader = new FXMLLoader(this.getClass().getResource("StudiesMainPageSemesterTab.fxml"));
         Tab newTab = loader.load();
         this.semestersTabPane.getTabs().add(newTab);
@@ -51,12 +48,31 @@ public class StudiesMainPageController implements Initializable {
         if (!InputValidation.isValidString(semesterCode)) {
             return;
         }
-        this.addSemesterTab(semesterCode);
+        Semester newSemester = new Semester(semesterCode);
+        studies.addSemester(newSemester);
+        this.addSemesterTab(newSemester);
+    }
+
+    private void loadSemester() throws IOException {
+        DatabaseManager.loadStudiesData(studies);
+        this.updateSemesterTab();
+    }
+
+    private void updateSemesterTab() throws IOException {
+        for (Semester semester: studies.getSemesters()) {
+            this.addSemesterTab(semester);
+        }
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        Platform.runLater(() -> {
+            try {
+                this.loadSemester();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }
 

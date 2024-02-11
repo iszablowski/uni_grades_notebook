@@ -1,6 +1,8 @@
 package application;
 
+import application.tools.DatabaseManager;
 import application.tools.InputValidation;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,12 +15,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class StudiesChooseController implements Initializable {
 
-    private HashMap<String, Studies> nameToStudies = new HashMap<String, Studies>();
+    private ArrayList<Studies> studiesArrayList = new ArrayList<>();
 
     @FXML
     private AnchorPane studiesMainPagePane;
@@ -28,20 +30,19 @@ public class StudiesChooseController implements Initializable {
     @FXML
     private ListView<String> studiesList = new ListView<String>();
 
-    private void addStudies(String newStudiesName) {
-        Studies newStudies = new Studies(newStudiesName);
-        nameToStudies.put(newStudiesName, newStudies);
-        studiesList.getItems().add(newStudiesName);
+    private void addStudies(Studies newStudies) {
+        studiesArrayList.add(newStudies);
+        studiesList.getItems().add(newStudies.getStudiesName());
     }
     @FXML
     protected void addStudiesBtnClick() throws IOException {
         final String studiesName = PopUpWindow.getSemesterName(this.studiesMainPagePane.getScene().getWindow(), "Enter studies name");
 
-        if (!InputValidation.isValidString(studiesName)) {
+        if (!InputValidation.isValidString(studiesName) || !(this.getStudiesByName(studiesName) == null)) {
             return;
         }
 
-        this.addStudies(studiesName);
+        this.addStudies(new Studies(studiesName));
     }
 
     @FXML
@@ -51,7 +52,7 @@ public class StudiesChooseController implements Initializable {
             return;
         }
 
-        Studies choosenStudies = nameToStudies.get(studiesList.getSelectionModel().getSelectedItem());
+        Studies choosenStudies = this.getStudiesByName(chosenElement);
         StudiesMainPageController.setStudies(choosenStudies);
 
         Parent root = FXMLLoader.load(getClass().getResource("StudiesMainPage.fxml"));
@@ -65,8 +66,27 @@ public class StudiesChooseController implements Initializable {
         studiesMainPagePane.getScene().getWindow().hide();
     }
 
+    private Studies getStudiesByName(String studiesToFindName) {
+        for (Studies studies: studiesArrayList) {
+            if (studies.getStudiesName() == studiesToFindName) {
+                return studies;
+            }
+        }
+        return null;
+    }
+
+
+    private void loadStudies() {
+        ArrayList<Studies> studiesToLoadArrayList = DatabaseManager.loadStudiesList();
+        for (Studies studies: studiesToLoadArrayList) {
+            this.addStudies(studies);
+        }
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        Platform.runLater(() -> {
+            this.loadStudies();
+        });
     }
 }

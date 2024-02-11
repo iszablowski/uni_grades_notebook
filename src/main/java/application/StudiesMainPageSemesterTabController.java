@@ -116,7 +116,11 @@ public class StudiesMainPageSemesterTabController implements Initializable {
     private void addClass(String newClassName, String newClassCode, int newClassEcts, Double newClassGrade) {
         Class newClass = new Class(newClassName, newClassCode, newClassEcts, newClassGrade);
         semester.addClass(newClass);
-        classesTable.getItems().add(newClass);
+        this.addClassToTable(newClass);
+    }
+
+    private void addClassToTable(Class classToAdd) {
+        classesTable.getItems().add(classToAdd);
         updateSemesterData();
     }
 
@@ -151,6 +155,7 @@ public class StudiesMainPageSemesterTabController implements Initializable {
     }
 
     private void initClassTable() {
+        this.updateTableData();
         classesTable.setEditable(true);
         classNameColumn.setEditable(true);
         classNameColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
@@ -215,6 +220,12 @@ public class StudiesMainPageSemesterTabController implements Initializable {
                 updateSemesterData();
             }
         });
+    }
+
+    private void updateTableData() {
+        for (Class classToAdd: semester.getSemesterClasses()) {
+            this.addClassToTable(classToAdd);
+        }
     }
 
     @FXML
