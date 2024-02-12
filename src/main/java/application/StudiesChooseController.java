@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class StudiesChooseController implements Initializable {
@@ -41,8 +42,10 @@ public class StudiesChooseController implements Initializable {
         if (!InputValidation.isValidString(studiesName) || !(this.getStudiesByName(studiesName) == null)) {
             return;
         }
-
-        this.addStudies(new Studies(studiesName));
+        Studies studiesToAdd = new Studies(studiesName);
+        if (DatabaseManager.addStudies(studiesToAdd)) {
+            this.addStudies(studiesToAdd);
+        }
     }
 
     @FXML
@@ -68,7 +71,7 @@ public class StudiesChooseController implements Initializable {
 
     private Studies getStudiesByName(String studiesToFindName) {
         for (Studies studies: studiesArrayList) {
-            if (studies.getStudiesName() == studiesToFindName) {
+            if (Objects.equals(studies.getStudiesName(), studiesToFindName)) {
                 return studies;
             }
         }

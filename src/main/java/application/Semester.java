@@ -11,11 +11,6 @@ public class Semester {
         this.setSemesterCode(newSemesterCode);
     }
 
-    public Semester(String newSemesterCode, ArrayList<Class> newSemesterClasses) {
-        this.setSemesterClasses(newSemesterClasses);
-        this.setSemesterCode(newSemesterCode);
-    }
-
     public String getSemesterCode() {
         return semesterCode;
     }

@@ -13,12 +13,6 @@ public class Class {
         this.setClassGrade(grade);
     }
 
-    public Class(String name, String code, int ects) {
-        this.setClassName(name);
-        this.setClassCode(code);
-        this.setClassEcts(ects);
-    }
-
     public boolean isGraded() {
         return (this.classGrade != 0);
     }

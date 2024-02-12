@@ -3,17 +3,11 @@ package application;
 import java.util.ArrayList;
 
 public class Studies {
-    private ArrayList<Semester> semesters;
+    private ArrayList<Semester> semesters = new ArrayList<>();
     private String studiesName;
 
     public Studies(String studiesName) {
-        semesters = new ArrayList<Semester>();
         this.studiesName = studiesName;
-    }
-
-    public Studies(String studiesName, ArrayList<Semester> semesters) {
-        this.studiesName = studiesName;
-        this.semesters = semesters;
     }
 
     public ArrayList<Semester> getSemesters() {
