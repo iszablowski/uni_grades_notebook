@@ -12,10 +12,13 @@ import javafx.scene.control.TabPane;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class StudiesMainPageController implements Initializable {
     private static Studies studies;
+
+    private Integer studiesId;
 
     @FXML
     private MenuItem addSemesterMenuItem;
@@ -38,6 +41,8 @@ public class StudiesMainPageController implements Initializable {
 
         StudiesMainPageSemesterTabController controller = loader.getController();
         controller.setSemester(newSemester);
+        controller.setStudies(studies);
+        controller.setStudiesId(studiesId);
     }
 
     @FXML
@@ -45,12 +50,14 @@ public class StudiesMainPageController implements Initializable {
 
         final String semesterCode = PopUpWindow.getSemesterName(this.semestersTabPane.getScene().getWindow(), "Enter semester name");
 
-        if (!InputValidation.isValidString(semesterCode)) {
+        if (!InputValidation.isValidString(semesterCode) || studies.getSemesterByCode(semesterCode) != null) {
             return;
         }
         Semester newSemester = new Semester(semesterCode);
-        studies.addSemester(newSemester);
-        this.addSemesterTab(newSemester);
+        if (DatabaseManager.addSemester(newSemester, studiesId)) {
+            studies.addSemester(newSemester);
+            this.addSemesterTab(newSemester);
+        }
     }
 
     private void loadSemester() throws IOException {
@@ -66,6 +73,11 @@ public class StudiesMainPageController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        try {
+            studiesId = DatabaseManager.getStudiesId(studies);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         Platform.runLater(() -> {
             try {
                 this.loadSemester();

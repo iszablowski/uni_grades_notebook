@@ -1,6 +1,7 @@
 package application;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Studies {
     private ArrayList<Semester> semesters = new ArrayList<>();
@@ -32,6 +33,15 @@ public class Studies {
 
     public void removeSemester(Semester semesterToRemove) {
         semesters.remove(semesterToRemove);
+    }
+
+    public Semester getSemesterByCode(String semesterCode) {
+        for (Semester semester: semesters) {
+            if (Objects.equals(semester.getSemesterCode(), semesterCode)) {
+                return semester;
+            }
+        }
+        return null;
     }
 
     public int getStudiesEcts() {

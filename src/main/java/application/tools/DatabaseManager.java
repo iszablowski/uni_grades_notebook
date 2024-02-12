@@ -6,28 +6,26 @@ import application.Studies;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class DatabaseManager {
 
     private static Connection connectToDatabase() {
         try {
             java.lang.Class.forName("org.h2.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:h2:~/test");
-            return connection;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        } catch (ClassNotFoundException e) {
+            return DriverManager.getConnection("jdbc:h2:~/test");
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    private static void createTablesIfNotExist() {
+    private static void createTablesIfNotExists() {
 
         Connection connection = DatabaseManager.connectToDatabase();
 
         try {
+            Objects.requireNonNull(connection);
             Statement statement = connection.createStatement();
 
             String studiesTableSql = "CREATE TABLE IF NOT EXISTS studies " +
@@ -40,7 +38,7 @@ public class DatabaseManager {
                     "(id Integer not NULL PRIMARY KEY AUTO_INCREMENT, " +
                     "studiesId Integer not NULL, " +
                     "name VARCHAR(255) not NULL, " +
-                    "FOREIGN KEY (studiesId) REFERENCES studies(id), " +
+                    "FOREIGN KEY (studiesId) REFERENCES studies(id) ON DELETE CASCADE, " +
                     "CONSTRAINT uniqueSemesterPerStudies UNIQUE (studiesId, name))";
             statement.execute(semesterTableSql);
 
@@ -51,7 +49,7 @@ public class DatabaseManager {
                     "code VARCHAR(10) not NULL, " +
                     "ects Integer not NULL, " +
                     "grade Double not NULL, " +
-                    "FOREIGN KEY (semesterId) REFERENCES semesters(id), " +
+                    "FOREIGN KEY (semesterId) REFERENCES semesters(id) ON DELETE CASCADE, " +
                     "CONSTRAINT uniqueClassPerSemester UNIQUE (semesterId, name))";
 
             statement.execute(classTableSql);
@@ -66,7 +64,7 @@ public class DatabaseManager {
     public static ArrayList<Studies> loadStudiesList() {
         ArrayList<Studies> studiesToLoad = new ArrayList<>();
         try {
-            DatabaseManager.createTablesIfNotExist();
+            DatabaseManager.createTablesIfNotExists();
 
             String getStudiesSql = "SELECT name FROM studies";
 
@@ -91,8 +89,6 @@ public class DatabaseManager {
 
     public static boolean addStudies(Studies studiesToAdd) {
         try {
-            DatabaseManager.createTablesIfNotExist();
-
             String insertStudiesSql = "INSERT INTO studies (name) VALUES (?)";
 
             Connection connection = DatabaseManager.connectToDatabase();
@@ -109,7 +105,44 @@ public class DatabaseManager {
         }
     }
 
-    private static Integer getStudiesId(Studies studies) throws SQLException {
+    public static boolean addSemester(Semester semester, Integer studiesId) {
+        try {
+            String insertSemesterSql = "INSERT INTO semesters (name, studiesId) VALUES (?, ?)";
+            Connection connection = DatabaseManager.connectToDatabase();
+            PreparedStatement statement = connection.prepareStatement(insertSemesterSql);
+            statement.setString(1, semester.getSemesterCode());
+            statement.setInt(2, studiesId);
+            statement.executeUpdate();
+            statement.close();
+            connection.close();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean addClass(Class classToAdd, Integer semesterId) {
+        try {
+            String insertClassesSql = "INSERT INTO classes (semesterId, name, code, ects, grade) VALUES (?, ?, ?, ?, ?)";
+            Connection connection = DatabaseManager.connectToDatabase();
+            PreparedStatement statement = connection.prepareStatement(insertClassesSql);
+            statement.setInt(1, semesterId);
+            statement.setString(2, classToAdd.getClassName());
+            statement.setString(3, classToAdd.getClassCode());
+            statement.setInt(4, classToAdd.getClassEcts());
+            statement.setDouble(5, classToAdd.getClassGrade());
+            statement.executeUpdate();
+            statement.close();
+            connection.close();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static Integer getStudiesId(Studies studies) throws SQLException {
         Connection connection = DatabaseManager.connectToDatabase();
         String getStudiesIdSql = "SELECT id FROM studies WHERE name=?";
         PreparedStatement statement = connection.prepareStatement(getStudiesIdSql);
@@ -119,15 +152,33 @@ public class DatabaseManager {
         if (result.next()) {
             studiesId = result.getInt("id");
         }
+        statement.close();
+        connection.close();
         return studiesId;
+    }
+
+    public static Integer getSemesterId(Semester semester, Integer studiesId) throws SQLException {
+        Connection connection = DatabaseManager.connectToDatabase();
+        String getSemesterIdSql = "SELECT id FROM semesters WHERE name=? AND studiesId=?";
+        PreparedStatement statement = connection.prepareStatement(getSemesterIdSql);
+        statement.setString(1, semester.getSemesterCode());
+        statement.setInt(2, studiesId);
+        ResultSet result = statement.executeQuery();
+        Integer semesterId = null;
+        if (result.next()) {
+            semesterId = result.getInt("id");
+        }
+        statement.close();
+        connection.close();
+        return semesterId;
     }
 
     public static void loadStudiesData(Studies studies) {
         try {
             Integer studiesId = DatabaseManager.getStudiesId(studies);
             Connection connection = DatabaseManager.connectToDatabase();
-            String selectSemesterData = "SELECT * FROM semesters WHERE studiesId=?";
-            String selectClassData = "SELECT * FROM classes WHERE semesterId=?";
+            String selectSemesterData = "SELECT * FROM semesters WHERE studiesId=? ORDER BY id";
+            String selectClassData = "SELECT * FROM classes WHERE semesterId=? ORDER BY id";
             PreparedStatement statement = connection.prepareStatement(selectSemesterData);
             statement.setInt(1, studiesId);
             ResultSet semestersResult = statement.executeQuery();
@@ -147,7 +198,6 @@ public class DatabaseManager {
                 studies.addSemester(newSemester);
 
             }
-
 
             statement.close();
             connection.close();

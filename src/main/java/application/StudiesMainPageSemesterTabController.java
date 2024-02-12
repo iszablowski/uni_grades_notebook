@@ -1,6 +1,7 @@
 package application;
 
 import application.tools.CustomIntegerStringConverter;
+import application.tools.DatabaseManager;
 import application.tools.InputValidation;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -13,11 +14,18 @@ import javafx.scene.control.cell.TextFieldTableCell;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class StudiesMainPageSemesterTabController implements Initializable {
 
     private Semester semester;
+
+    private Studies studies;
+
+    private Integer semesterId;
+
+    private Integer studiesId;
 
     @FXML
     private Button addClassButton;
@@ -74,6 +82,14 @@ public class StudiesMainPageSemesterTabController implements Initializable {
         this.semester = semester;
     }
 
+    public void setStudies(Studies studies) {
+        this.studies = studies;
+    }
+
+    public void setStudiesId(Integer studiesId) {
+        this.studiesId = studiesId;
+    }
+
     @FXML
     private void setHaveGradeCheckbox() {
         if (!haveGradeCheckbox.isSelected()) {
@@ -115,8 +131,10 @@ public class StudiesMainPageSemesterTabController implements Initializable {
 
     private void addClass(String newClassName, String newClassCode, int newClassEcts, Double newClassGrade) {
         Class newClass = new Class(newClassName, newClassCode, newClassEcts, newClassGrade);
-        semester.addClass(newClass);
-        this.addClassToTable(newClass);
+        if (DatabaseManager.addClass(newClass, this.semesterId)) {
+            semester.addClass(newClass);
+            this.addClassToTable(newClass);
+        }
     }
 
     private void addClassToTable(Class classToAdd) {
@@ -139,7 +157,7 @@ public class StudiesMainPageSemesterTabController implements Initializable {
         String className = this.getNewClassName();
         String classCode = this.getNewClassCode();
         Double classGrade = this.getNewClassGrade();
-        if (!InputValidation.isClassDataValid(className, classCode, classEctsString, classGrade)) {
+        if (!InputValidation.isClassDataValid(className, classCode, classEctsString, classGrade) || !(semester.getClassByName(className) == null)) {
             return;
         }
         this.addClass(className, classCode, Integer.parseInt(classEctsString), classGrade);
@@ -164,7 +182,7 @@ public class StudiesMainPageSemesterTabController implements Initializable {
             @Override
             public void handle(TableColumn.CellEditEvent<Class, String> classStringCellEditEvent) {
                 String newClassName = classStringCellEditEvent.getNewValue();
-                if (InputValidation.isValidString(newClassName)) {
+                if (InputValidation.isValidString(newClassName) && semester.getClassByName(newClassName) == null) {
                     classStringCellEditEvent.getTableView().getItems().get(classStringCellEditEvent.getTablePosition().getRow()).setClassName(newClassName);
                 } else {
                     classesTable.refresh();
@@ -244,13 +262,17 @@ public class StudiesMainPageSemesterTabController implements Initializable {
     }
 
     private void updateSemesterCumulativeAverage() {
-        Studies studies = (Studies) semesterTab.getContent().getScene().getWindow().getUserData();
         cumulativeAverageLabel.setText(String.valueOf(studies.getStudiesCumulativeAverage(semester)));
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Platform.runLater(() -> {
+            try {
+                this.semesterId = DatabaseManager.getSemesterId(semester, studiesId);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
             this.initClassTable();
             semesterTab.setText(semester.getSemesterCode());
             newClassGradeCombobox.getItems().add(null);

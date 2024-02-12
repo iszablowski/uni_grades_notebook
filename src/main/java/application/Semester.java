@@ -1,6 +1,7 @@
 package application;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Semester {
     private String semesterCode;
@@ -69,5 +70,14 @@ public class Semester {
 
     public double getSemesterAverage() {
         return Math.round(this.getSemesterWeightedGradesSum()/this.getSemesterEctsToAverage() * 100d)/100d;
+    }
+
+    public Class getClassByName(String className) {
+        for (Class uniClass: semesterClasses) {
+            if (Objects.equals(uniClass.getClassName(), className)) {
+                return uniClass;
+            }
+        }
+        return null;
     }
 }
