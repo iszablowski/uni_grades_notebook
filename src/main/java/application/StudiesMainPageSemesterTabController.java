@@ -172,6 +172,7 @@ public class StudiesMainPageSemesterTabController implements Initializable {
         this.newClassEctsTextField.clear();
         this.newClassGradeCombobox.getSelectionModel().clearSelection();
         this.haveGradeCheckbox.setSelected(true);
+        this.newClassGradeCombobox.setDisable(false);
     }
 
     private void initClassTable() {
