@@ -117,12 +117,14 @@ public class StudiesMainPageSemesterTabController implements Initializable {
     private void renameSemesterMenuItemAction() throws IOException {
         final String newSemesterCode = PopUpWindow.getSemesterName(this.semesterTab.getContent().getScene().getWindow(), "Enter new semester name");
 
-        if (!InputValidation.isValidString(newSemesterCode)) {
+        if (!InputValidation.isValidString(newSemesterCode) || studies.getSemesterByCode(newSemesterCode) != null) {
             return;
         }
-        semester.setSemesterCode(newSemesterCode);
-        semesterTab.setText(newSemesterCode);
-
+        if (DatabaseManager.updateSemester(newSemesterCode, semesterId)) {
+            semester.setSemesterCode(newSemesterCode);
+            semesterTab.setText(newSemesterCode);
+            ((MenuItem)semesterTab.getUserData()).setText(newSemesterCode);
+        }
     }
 
     private String getNewClassEctsString() {
@@ -183,11 +185,15 @@ public class StudiesMainPageSemesterTabController implements Initializable {
             public void handle(TableColumn.CellEditEvent<Class, String> classStringCellEditEvent) {
                 String newClassName = classStringCellEditEvent.getNewValue();
                 if (InputValidation.isValidString(newClassName) && semester.getClassByName(newClassName) == null) {
-                    classStringCellEditEvent.getTableView().getItems().get(classStringCellEditEvent.getTablePosition().getRow()).setClassName(newClassName);
+                    Class classToUpdate = classStringCellEditEvent.getTableView().getItems().get(classStringCellEditEvent.getTablePosition().getRow());
+                    if (DatabaseManager.updateClassName(classToUpdate, newClassName, semesterId)) {
+                        classToUpdate.setClassName(newClassName);
+                    } else {
+                        classesTable.refresh();
+                    }
                 } else {
                     classesTable.refresh();
                 }
-                updateSemesterData();
             }
         });
 
@@ -199,11 +205,15 @@ public class StudiesMainPageSemesterTabController implements Initializable {
             public void handle(TableColumn.CellEditEvent<Class, String> classStringCellEditEvent) {
                 String newClassCode = classStringCellEditEvent.getNewValue();
                 if (InputValidation.isValidString(newClassCode)) {
-                    classStringCellEditEvent.getTableView().getItems().get(classStringCellEditEvent.getTablePosition().getRow()).setClassCode(newClassCode);
+                    Class classToUpdate = classStringCellEditEvent.getTableView().getItems().get(classStringCellEditEvent.getTablePosition().getRow());
+                    if (DatabaseManager.updateClassCode(classToUpdate, newClassCode, semesterId)) {
+                        classToUpdate.setClassCode(newClassCode);
+                    } else {
+                        classesTable.refresh();
+                    }
                 } else {
                     classesTable.refresh();
                 }
-                updateSemesterData();
             }
         });
 
@@ -215,11 +225,16 @@ public class StudiesMainPageSemesterTabController implements Initializable {
             public void handle(TableColumn.CellEditEvent<Class, Integer> classIntegerCellEditEvent) {
                 Integer newEcts = classIntegerCellEditEvent.getNewValue();
                 if (newEcts != null && newEcts > 0) {
-                    classIntegerCellEditEvent.getTableView().getItems().get(classIntegerCellEditEvent.getTablePosition().getRow()).setClassEcts(newEcts);
+                    Class classToUpdate = classIntegerCellEditEvent.getTableView().getItems().get(classIntegerCellEditEvent.getTablePosition().getRow());
+                    if (DatabaseManager.updateClassEcts(classToUpdate, newEcts, semesterId)) {
+                        classToUpdate.setClassEcts(newEcts);
+                        updateSemesterData();
+                    } else {
+                        classesTable.refresh();
+                    }
                 } else {
                     classesTable.refresh();
                 }
-                updateSemesterData();
             }
         });
 
@@ -229,13 +244,14 @@ public class StudiesMainPageSemesterTabController implements Initializable {
         gradeColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Class, Double>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<Class, Double> classDoubleCellEditEvent) {
-                Double newGrade = classDoubleCellEditEvent.getNewValue();
-                if (newGrade != null) {
-                    classDoubleCellEditEvent.getTableView().getItems().get(classDoubleCellEditEvent.getTablePosition().getRow()).setClassGrade(newGrade);
+                Double newGrade = (classDoubleCellEditEvent.getNewValue() != null) ? classDoubleCellEditEvent.getNewValue(): 0;
+                Class classToUpdate = classDoubleCellEditEvent.getTableView().getItems().get(classDoubleCellEditEvent.getTablePosition().getRow());
+                if (DatabaseManager.updateClassGrade(classToUpdate, newGrade, semesterId)) {
+                    classToUpdate.setClassGrade(newGrade);
+                    updateSemesterData();
                 } else {
-                    classDoubleCellEditEvent.getTableView().getItems().get(classDoubleCellEditEvent.getTablePosition().getRow()).setClassGrade(0);
+                    classesTable.refresh();
                 }
-                updateSemesterData();
             }
         });
     }

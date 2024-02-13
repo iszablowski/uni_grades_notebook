@@ -142,6 +142,111 @@ public class DatabaseManager {
         }
     }
 
+    public static boolean updateSemester(String newSemesterCode, Integer semesterId) {
+        try {
+            String updateSemesterSql = "UPDATE semesters SET name=? WHERE id=?";
+            Connection connection = DatabaseManager.connectToDatabase();
+            PreparedStatement statement = connection.prepareStatement(updateSemesterSql);
+            statement.setString(1, newSemesterCode);
+            statement.setInt(2, semesterId);
+            statement.executeUpdate();
+            statement.close();
+            connection.close();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean updateClassName(Class classToUpdate, String newClassName, Integer semesterId) {
+        try {
+            String updateClassNameSql = "UPDATE classes SET name=? WHERE semesterId=? AND name=?";
+            Connection connection = DatabaseManager.connectToDatabase();
+            PreparedStatement statement = connection.prepareStatement(updateClassNameSql);
+            statement.setString(1, newClassName);
+            statement.setInt(2, semesterId);
+            statement.setString(3, classToUpdate.getClassName());
+            statement.executeUpdate();
+            statement.close();
+            connection.close();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean updateClassCode(Class classToUpdate, String newClassCode, Integer semesterId) {
+        try {
+            String updateClassCodeSql = "UPDATE classes SET code=? WHERE semesterId=? AND name=?";
+            Connection connection = DatabaseManager.connectToDatabase();
+            PreparedStatement statement = connection.prepareStatement(updateClassCodeSql);
+            statement.setString(1, newClassCode);
+            statement.setInt(2, semesterId);
+            statement.setString(3, classToUpdate.getClassName());
+            statement.executeUpdate();
+            statement.close();
+            connection.close();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean updateClassEcts(Class classToUpdate, Integer newClassEcts, Integer semesterId) {
+        try {
+            String updateClassEctsSql = "UPDATE classes SET ects=? WHERE semesterId=? AND name=?";
+            Connection connection = DatabaseManager.connectToDatabase();
+            PreparedStatement statement = connection.prepareStatement(updateClassEctsSql);
+            statement.setInt(1, newClassEcts);
+            statement.setInt(2, semesterId);
+            statement.setString(3, classToUpdate.getClassName());
+            statement.executeUpdate();
+            statement.close();
+            connection.close();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean updateClassGrade(Class classToUpdate, Double newClassGrade, Integer semesterId) {
+        try {
+            String updateClassGradeSql = "UPDATE classes SET grade=? WHERE semesterId=? AND name=?";
+            Connection connection = DatabaseManager.connectToDatabase();
+            PreparedStatement statement = connection.prepareStatement(updateClassGradeSql);
+            statement.setDouble(1, newClassGrade);
+            statement.setInt(2, semesterId);
+            statement.setString(3, classToUpdate.getClassName());
+            statement.executeUpdate();
+            statement.close();
+            connection.close();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean deleteSemester(Integer semesterId) {
+        try {
+            String deleteSemesterSql = "DELETE FROM semesters WHERE id=?";
+            Connection connection = DatabaseManager.connectToDatabase();
+            PreparedStatement statement = connection.prepareStatement(deleteSemesterSql);
+            statement.setInt(1, semesterId);
+            statement.executeUpdate();
+            statement.close();
+            connection.close();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static Integer getStudiesId(Studies studies) throws SQLException {
         Connection connection = DatabaseManager.connectToDatabase();
         String getStudiesIdSql = "SELECT id FROM studies WHERE name=?";
