@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
 
@@ -10,13 +11,18 @@
    <children>
       <AnchorPane fx:id="studiesMainPagePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="253.0" prefWidth="400.0">
          <children>
-            <ListView fx:id="studiesList" layoutX="52.0" layoutY="68.0" onMouseClicked="#studiesChoose" prefHeight="198.0" prefWidth="400.0" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-            <ButtonBar layoutX="75.0" layoutY="198.0" prefHeight="54.0" prefWidth="250.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="75.0" AnchorPane.topAnchor="198.0">
-              <buttons>
-                <Button fx:id="addStudiesBtn" ButtonBar.buttonData="LEFT" mnemonicParsing="false" onAction="#addStudiesBtnClick" text="Add studies" />
-                  <Button ButtonBar.buttonData="RIGHT" mnemonicParsing="false" text="Remove studies" />
-              </buttons>
-            </ButtonBar>
+            <ListView fx:id="studiesList" focusTraversable="false" layoutX="52.0" layoutY="27.0" onMouseClicked="#studiesChoose" prefHeight="225.0" prefWidth="400.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0" />
+            <MenuBar prefHeight="17.0" prefWidth="400.0">
+              <menus>
+                <Menu mnemonicParsing="false" text="Studies">
+                  <items>
+                    <MenuItem fx:id="addStudiesMenuItem" mnemonicParsing="false" onAction="#addStudiesMenuItemAction" text="Add" />
+                        <Menu fx:id="removeStudiesMenu" mnemonicParsing="false" text="Remove">
+                        </Menu>
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
          </children>
       </AnchorPane>
    </children>

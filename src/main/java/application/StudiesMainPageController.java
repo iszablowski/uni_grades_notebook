@@ -105,7 +105,7 @@ public class StudiesMainPageController implements Initializable {
         ObservableList<MenuItem> menuItems = removeSemesterMenu.getItems();
         MenuItem menuItemToRemove = null;
         for (MenuItem menuItem: menuItems) {
-            if(Objects.equals(menuItem.getText(), semester.getSemesterCode())) {
+            if (Objects.equals(menuItem.getText(), semester.getSemesterCode())) {
                 menuItemToRemove = menuItem;
             }
         }

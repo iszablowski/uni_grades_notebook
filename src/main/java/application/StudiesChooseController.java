@@ -3,13 +3,17 @@ package application;
 import application.tools.DatabaseManager;
 import application.tools.InputValidation;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -25,8 +29,12 @@ public class StudiesChooseController implements Initializable {
 
     @FXML
     private AnchorPane studiesMainPagePane;
+
     @FXML
-    private Button addStudiesBtn;
+    private MenuItem addStudiesMenuItem;
+
+    @FXML
+    private Menu removeStudiesMenu;
 
     @FXML
     private ListView<String> studiesList = new ListView<String>();
@@ -34,9 +42,52 @@ public class StudiesChooseController implements Initializable {
     private void addStudies(Studies newStudies) {
         studiesArrayList.add(newStudies);
         studiesList.getItems().add(newStudies.getStudiesName());
+        this.addRemoveStudiesMenuItem(newStudies);
+    }
+
+    private void addRemoveStudiesMenuItem(Studies studies) {
+        MenuItem removeStudiesMenuItem = new MenuItem(studies.getStudiesName());
+
+        removeStudiesMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                if (DatabaseManager.deleteStudies(studies.getStudiesName())) {
+                    removeStudies(studies);
+                }
+            }
+        });
+        removeStudiesMenu.getItems().add(removeStudiesMenuItem);
+    }
+
+    private void removeStudies(Studies studies) {
+        this.studiesArrayList.remove(studies);
+        this.removeStudiesFromListView(studies.getStudiesName());
+        this.removeStudiesRemoveMenuItem(studies.getStudiesName());
+    }
+
+    private void removeStudiesFromListView(String studiesToRemoveName) {
+        ObservableList<String> listViewStrings = studiesList.getItems();
+        String viewStringToRemove = null;
+        for (String viewString: listViewStrings) {
+            if (viewString.equals(studiesToRemoveName)) {
+                viewStringToRemove = viewString;
+            }
+        }
+        studiesList.getItems().remove(viewStringToRemove);
+    }
+
+    private void removeStudiesRemoveMenuItem(String studiesToRemoveName) {
+        ObservableList<MenuItem> menuItems = removeStudiesMenu.getItems();
+        MenuItem menuItemToRemove = null;
+        for (MenuItem menuItem: menuItems) {
+            if (Objects.equals(menuItem.getText(), studiesToRemoveName)) {
+                menuItemToRemove = menuItem;
+            }
+        }
+        removeStudiesMenu.getItems().remove(menuItemToRemove);
     }
     @FXML
-    protected void addStudiesBtnClick() throws IOException {
+    protected void addStudiesMenuItemAction() throws IOException {
         final String studiesName = PopUpWindow.getSemesterName(this.studiesMainPagePane.getScene().getWindow(), "Enter studies name");
 
         if (!InputValidation.isValidString(studiesName) || !(this.getStudiesByName(studiesName) == null)) {

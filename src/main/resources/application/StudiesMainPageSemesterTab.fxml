@@ -24,7 +24,7 @@
    <content>
       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="561.0" prefWidth="708.0">
          <children>
-            <TableView fx:id="classesTable" layoutY="-4.0" prefHeight="494.0" prefWidth="516.0" AnchorPane.bottomAnchor="-5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="324.0" AnchorPane.topAnchor="-4.0">
+            <TableView fx:id="classesTable" layoutY="-4.0" prefHeight="494.0" prefWidth="516.0" AnchorPane.bottomAnchor="-5.0" focusTraversable="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="324.0" AnchorPane.topAnchor="-4.0">
                <columns>
                   <TableColumn fx:id="classNameColumn" editable="false" prefWidth="200.0" text="Class name" />
                   <TableColumn fx:id="codeColumn" editable="false" prefWidth="100.0" text="Code" />

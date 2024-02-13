@@ -247,6 +247,22 @@ public class DatabaseManager {
         }
     }
 
+    public static boolean deleteStudies(String studiesName) {
+        try {
+            String deleteStudiesSql = "DELETE FROM studies WHERE name=?";
+            Connection connection = DatabaseManager.connectToDatabase();
+            PreparedStatement statement = connection.prepareStatement(deleteStudiesSql);
+            statement.setString(1, studiesName);
+            statement.executeUpdate();
+            statement.close();
+            connection.close();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static Integer getStudiesId(Studies studies) throws SQLException {
         Connection connection = DatabaseManager.connectToDatabase();
         String getStudiesIdSql = "SELECT id FROM studies WHERE name=?";
