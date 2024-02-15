@@ -4,6 +4,7 @@ import application.Class;
 import application.Semester;
 import application.Studies;
 
+import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -13,7 +14,8 @@ public class DatabaseManager {
     private static Connection connectToDatabase() {
         try {
             java.lang.Class.forName("org.h2.Driver");
-            return DriverManager.getConnection("jdbc:h2:~/test");
+            String pathToDatabase = Paths.get(System.getProperty("user.home"), ".uniGradesNotebook", "uni_grades").toString();
+            return DriverManager.getConnection("jdbc:h2:" + pathToDatabase);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             return null;
