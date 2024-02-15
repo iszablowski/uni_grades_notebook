@@ -4,6 +4,8 @@ import application.tools.CustomIntegerStringConverter;
 import application.tools.DatabaseManager;
 import application.tools.InputValidation;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,6 +13,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.Callback;
 
 import java.io.IOException;
 import java.net.URL;
@@ -175,7 +178,33 @@ public class StudiesMainPageSemesterTabController implements Initializable {
         this.newClassGradeCombobox.setDisable(false);
     }
 
+    private void removeClass(Class classToRemove) {
+        semester.removeClass(classToRemove);
+        classesTable.getItems().remove(classToRemove);
+    }
+
     private void initClassTable() {
+        classesTable.setRowFactory(new Callback<TableView, TableRow>() {
+            @Override
+            public TableRow call(TableView tableView) {
+                ContextMenu deleteClassMenu = new ContextMenu();
+                MenuItem deleteClassMenuItem = new MenuItem("Remove");
+                TableRow<Class> newClassRow = new TableRow<>();
+                deleteClassMenu.getItems().add(deleteClassMenuItem);
+                newClassRow.contextMenuProperty().bind(Bindings.when(Bindings.isNotNull(newClassRow.itemProperty())).then(deleteClassMenu).otherwise((ContextMenu) null));
+                deleteClassMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        Class classToRemove = newClassRow.getItem();
+                        if (DatabaseManager.deleteClass(classToRemove.getClassName(), semesterId)) {
+                            removeClass(classToRemove);
+                            updateSemesterData();
+                        }
+                    }
+                });
+                return  newClassRow;
+            }
+        });
         this.updateTableData();
         classesTable.setEditable(true);
         classNameColumn.setEditable(true);

@@ -263,6 +263,23 @@ public class DatabaseManager {
         }
     }
 
+    public static boolean deleteClass(String className, Integer semesterId) {
+        try {
+            String deleteClassSql = "DELETE FROM classes WHERE name=? AND semesterId=?";
+            Connection connection = DatabaseManager.connectToDatabase();
+            PreparedStatement statement = connection.prepareStatement(deleteClassSql);
+            statement.setString(1, className);
+            statement.setInt(2, semesterId);
+            statement.executeUpdate();
+            statement.close();
+            connection.close();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static Integer getStudiesId(Studies studies) throws SQLException {
         Connection connection = DatabaseManager.connectToDatabase();
         String getStudiesIdSql = "SELECT id FROM studies WHERE name=?";

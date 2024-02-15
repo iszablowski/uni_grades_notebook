@@ -32,6 +32,10 @@ public class Semester {
         semesterClasses.add(newClass);
     }
 
+    public void removeClass(Class classToRemove) {
+        semesterClasses.remove(classToRemove);
+    }
+
     public int getSemesterPlannedEcts() {
         int semesterEcts = 0;
         for (Class uniClass: semesterClasses) {
